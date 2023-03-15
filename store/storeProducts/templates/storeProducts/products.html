@@ -35,7 +35,7 @@
                     <a class="nav-link" href="/store/products">Каталог <i class="fas fa-shopping-bag"></i> </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="users/login.html">Войти <i class="fas fa-sign-in-alt"></i></a>
+                    <a class="nav-link" href=/users/login>Войти <i class="fas fa-sign-in-alt"></i></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -73,7 +73,7 @@
             <h1 class="my-4">Store</h1>
             <div class="list-group">
                 {% for category in categories %}
-                    <a href="#" class="list-group-item">{{category.name}}</a>
+                    <a href="{% url 'storeProducts:category' category.id %}" class="list-group-item">{{ category.name }}</a>
                 {% endfor %}
             </div>
 
@@ -110,12 +110,12 @@
             </div>
 
             <div class="row">
-                {% for product in products %}
+                {% for product in page_obj %}
                      <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100">
                             <a href="#">
                                 <img class="card-img-top"
-                                src=" {{ product.image }}"
+                                src="{{ product.image.url }}"
                                 alt="">
                             </a>
                             <div class="card-body">
@@ -139,15 +139,21 @@
 
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for page in page_obj.paginator.page_range %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
             </nav>
 
